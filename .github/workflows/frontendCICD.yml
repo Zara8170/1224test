@@ -21,10 +21,10 @@ jobs:
  
       - name: Frontend Dockerfile build
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/dockerfrontend .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/frontend .
       - name: Push Frontend Docker image
         run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/dockerfrontend
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend
 
         
   deploy:
@@ -38,11 +38,11 @@ jobs:
           host: ${{ secrets.EC2_HOST_IP }}
           key: ${{ secrets.SSH_KEY }}    
           script: |          
-            if [ "$(sudo docker ps -a -q -f name=dockerfrontend)" ]; then
+            if [ "$(sudo docker ps -a -q -f name=frontend)" ]; then
               sudo docker rm -f dockerfrontend
             fi
-            if [ "$(sudo docker images -q ${{ secrets.DOCKERHUB_USERNAME }}/dockerfrontend)" ]; then
-              sudo docker rmi -f ${{ secrets.DOCKERHUB_USERNAME }}/dockerfrontend
+            if [ "$(sudo docker images -q ${{ secrets.DOCKERHUB_USERNAME }}/frontend)" ]; then
+              sudo docker rmi -f ${{ secrets.DOCKERHUB_USERNAME }}/frontend
             fi          
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/dockerfrontend         
-            sudo docker run -d -p 80:80 --name dockerfrontend ${{ secrets.DOCKERHUB_USERNAME }}/dockerfrontend
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/frontend         
+            sudo docker run -d -p 80:80 --name dockerfrontend ${{ secrets.DOCKERHUB_USERNAME }}/frontend
